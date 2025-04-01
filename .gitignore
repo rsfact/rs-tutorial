@@ -1,0 +1,3 @@
+__pycache__
+.venv
+fastapi-url-shortener/db.json
