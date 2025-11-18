@@ -93,6 +93,7 @@
 ### 仮想環境を使う場合
 
 ```bash
+cd fastapi-url-shortener
 python -m venv .venv
 source .venv/Scripts/activate
 pip install -r requirements.txt
