@@ -1,3 +1,4 @@
 __pycache__
 .venv
 fastapi-url-shortener/db.sqlite
+.DS_Store
