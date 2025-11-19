@@ -1,0 +1,14 @@
+[
+  {
+    "uuid": "3ddc15ad-c21e-4793-8586-647216fcf31a",
+    "from_name": "google",
+    "to_url": "https://www.google.com",
+    "count": 1
+  },
+  {
+    "uuid": "835c2ad8-afac-4be7-9f1e-73f332b6f2b5",
+    "from_name": "yahoo",
+    "to_url": "https://www.yahoo.co.jp",
+    "count": 1
+  }
+]
