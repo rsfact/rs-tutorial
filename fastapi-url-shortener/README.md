@@ -16,16 +16,7 @@
 ### 技術仕様
 
 - フレームワーク: FastAPI
-- データ保存: JSONファイル
-
-### ディレクトリ構造
-
-```bash
-/
-├── main.py
-├── requirements.txt
-└── db.json
-```
+- データ保存: SQLite
 
 ### 実装手順
 
@@ -39,7 +30,7 @@
    - `from_name`: 短縮URLの名前部分
    - `to_url`: リダイレクト先の元URL
 2. レスポンスモデル (`ShortenResponse`) を作成する
-   - `uuid`: 一意のID
+   - `id`: 一意のUUID
    - `from_name`: 短縮URLの名前
    - `to_url`: リダイレクト先の元URL
    - `count`: 転送回数
@@ -78,7 +69,10 @@
 
 3. 作成された短縮URL (例: `http://localhost:8000/u/google`) にアクセスして、リダイレクトされることを確認する
 
-### ステップ6: 応用課題
+### ステップ6: リダイレクトURLの発行をするフロントエンドを簡易的に実装する
+from_nameとto_urlをインプットとして、リダイレクトURLを返す最も簡単なフロントを実装しましょう。目指せ100行以内。
+
+### ステップ7: 応用課題
 
 - ngrokを用いて公開URLを発行する。
   - ngrokで固定ドメインを発行する。
@@ -90,17 +84,10 @@
 
 ## 環境構築
 
-### 仮想環境を使う場合
-
 ```bash
 python -m venv .venv
-source .venv/Scripts/activate
-pip install -r requirements.txt
-```
-
-### 仮想環境を使わない場合
-
-```bash
+source .venv/Scripts/activate # Windows
+source .venv/bin/activate # Mac
 pip install -r requirements.txt
 ```
 
