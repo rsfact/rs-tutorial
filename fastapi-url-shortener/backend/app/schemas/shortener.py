@@ -7,11 +7,12 @@ class ShortenRequest(BaseModel):
     from_name: str
     to_url: str
 
+
 class ShortenResponse(BaseModel):
     """
     レスポンス: URL登録
     """
-    uuid: str
     from_name: str
     to_url: str
     count: int
+    created_at: str
