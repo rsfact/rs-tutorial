@@ -10,26 +10,60 @@
 
 1. ユーザーが元のURL (長いURL) と短縮名を指定して、短縮URLを作成できる
 2. 短縮URLにアクセスすると、元のURLにリダイレクトされる
-3. 短縮URLがアクセスされた回数を記録する
-4. データはJSONファイルに保存される
+3. 短縮URLにアクセスされた回数を記録する
+4. データはSQlite（`db.sqlite`）に保存される
+
 
 ### 技術仕様
 
 - フレームワーク: FastAPI
-- データ保存: SQLite
+- データベース: SQLite
+
+| カラム名      | 型         | 説明                        |
+|:------------|:----------|:--------------------------|
+| id          | TEXT      | 一意のUUID主キー              |
+| from_name   | TEXT      | ユーザーが指定する短縮名（ユニーク）|
+| to_url      | TEXT      | 元の長いURL                  |
+| count       | INTEGER   | リダイレクト回数（デフォルト0）   |
+| created_at  | TIMESTAMP | レコード作成日時               |
+
+
+### 環境構築
+
+```bash
+python -m venv .venv
+source .venv/Scripts/activate # Windows
+source .venv/bin/activate # Mac
+pip install -r requirements.txt
+```
+
+```bash
+cd database
+touch db.sqlite
+python initialize.py # カラムを作成する
+```
+
 
 ### 実装手順
 
 #### ステップ1: FastAPI設定
 
-`GET /`で`Hello World`が返るような、最も基本的なエンドポイントを作成し、動作を確認する。
+`Hello World`が返るような、最も基本的なエンドポイント``GET：localhost:8000/`を作成し、動作を確認する。
 
-#### ステップ2: データモデルの定義
+```bash
+# 起動する
+cd backend
+python main.py
+```
+[Swagger UI](http://localhost:8000/docs)にアクセスする。
 
-1. リクエストモデル (`ShortenRequest`) を作成する
+
+#### ステップ2: API通信の型=スキーマの定義
+
+1. リクエストモデル (`ReqShorten`) を作成する
    - `from_name`: 短縮URLの名前部分
    - `to_url`: リダイレクト先の元URL
-2. レスポンスモデル (`ShortenResponse`) を作成する
+2. レスポンスモデル (`ResShorten`) を作成する
    - `id`: 一意のUUID
    - `from_name`: 短縮URLの名前
    - `to_url`: リダイレクト先の元URL
@@ -37,22 +71,22 @@
 
 #### ステップ3: データベース操作関数の実装
 
-1. JSONファイルにデータを保存する関数を作成する
-2. JSONファイルからデータを読み込む関数を作成する
-3. ファイルが存在しない場合は新しく作成する処理を追加する
+1. `db.sqlite`にデータを保存する関数を作成する
+2. `db.sqlite`からデータを読み込む関数を作成する
+3. `db.sqlite`が存在しない場合は新しく作成する処理を追加する
 
 #### ステップ4: APIエンドポイントの実装
 
-1. URL短縮エンドポイント (`/shorten`) を作成する
-   - JSONのPOSTリクエストを受け付ける
+1. URL短縮エンドポイント (`POST：localhost:8000/shorten`) を作成する
+   - POSTリクエストを受け付ける
    - 短縮名の重複チェックを行う
    - 新しい短縮URLを作成してデータベースに保存する
    - 作成した短縮URLの情報を返す (上記のレスポンスモデルを参照)
-2. リダイレクトエンドポイント (`/u/{name}`) を作成する
+2. リダイレクトエンドポイント (`GET：localhost:8000/u/{name}`) を作成する
    - GETリクエストを受け付ける
    - 指定された名前に対応するURLを検索する
    - アクセス回数をカウントアップする
-   - 元のURLにリダイレクトする
+   - 元のURLにリダイレクトする（`Pydantic`の`RedirectResponse`を使用します）
    - URLが見つからない場合は404エラーを返す
 
 ### ステップ5: テスト
@@ -70,31 +104,17 @@
 3. 作成された短縮URL (例: `http://localhost:8000/u/google`) にアクセスして、リダイレクトされることを確認する
 
 ### ステップ6: リダイレクトURLの発行をするフロントエンドを簡易的に実装する
-from_nameとto_urlをインプットとして、リダイレクトURLを返す最も簡単なフロントを実装しましょう。目指せ100行以内。
+from_nameとto_urlをインプットとして、リダイレクトURLを返す最も簡単なフロントを実装しよう。目指せ100行以内。
+
+```bash
+mkdir frontend
+cd frontend
+touch index.html
+# コードを書いてください。
+```
 
 ### ステップ7: 応用課題
 
 - ngrokを用いて公開URLを発行する。
-  - ngrokで固定ドメインを発行する。
-  - `line`で自分のLINE登録URLに転送させるようにする。 (例: `https://example.ngrok-free.app/u/line`)
-- Conoha VPSを用いて、Linux環境にデプロイする。
-  - tmuxを用いて2セッション作成し、本プログラムとngrokをそれぞれ起動し、外部からのアクセスを確認する。
-
----
-
-## 環境構築
-
-```bash
-python -m venv .venv
-source .venv/Scripts/activate # Windows
-source .venv/bin/activate # Mac
-pip install -r requirements.txt
-```
-
-## 起動
-
-```bash
-python main.py
-```
-
-[Swagger UI](http://localhost:8000/docs)にアクセスする。
+- リンクを開いたら、自身のLINE登録URLに転送させるようにしてみてください。
+- 例: `https://example.ngrok-free.app/u/line` -> `https://line.me/R/ti/p/@1234567890`
