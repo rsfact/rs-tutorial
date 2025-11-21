@@ -2,3 +2,4 @@ __pycache__/
 .venv/
 .env
 fastapi-url-shortener/database/db.sqlite
+.cloudflared/

@@ -48,3 +48,54 @@ sqlite3.Rowは特別なクラスで、SELECT結果を辞書みたいに扱える
   ```
 こうなる！！！
 めっちゃ読みやすいし、ミスも減る💙
+
+
+
+
+
+# from sqlalchemy import create_engine
+データベースに接続するためのエンジンを作る関数。SQLAlchemyの心臓部分
+
+# from sqlalchemy.orm import sessionmaker
+DBと対話するためのセッションを作る工場(ファクトリー)。セッションを通じてCRUDを行う
+
+# from sqlalchemy.ext.declarative import declarative_base
+モデル(テーブル)を作るためのBaseクラスの元。class User(Base):とかで継承する
+
+# engine = create_engine(f"sqlite:///{str(db_path.resolve())}")
+SQLiteに接続するエンジン(実際のDBとやりとりするもの)を作成。sqlite:///はSQLite用のURL形式。
+  例：sqlite:////Users/kano/.../database/db.sqlite
+
+
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+セッション(DBと会話するオブジェクト)を作る"工場関数"
+autocommit=False👉明示的にcommitが筆意用
+autoflush=False👉DBに自動で反映しない(安全)
+bind=engine👉この工場から作られるSessionはengineを使う
+この工程で、fastapiのエンドポイントからdb=sessionLocal()とすると「DBとやりとりできるSessionオブジェクト」が作れる
+
+# Base = declarative_base()
+SQLAlchemyのモデルはBaseを継承して作る。
+例  class Url(Base):
+      __tablename__ = "urls"
+      id = Column(Integer, primary_key=True)
+Alembicがテーブルを自動認識するためにも必須
+
+# def get_db() ...
+```python
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+```
+ここがFastAPIとSQLAlchemyの一番大事な接続ポイント！
+## db = SessionLocal()
+セッション(DBとの接続)を作る
+## yield db
+FastAPIに「このdbセッションを渡す」の意味
+  def endpoint(db: Session = Depends(get_db)):
+👆このときに使われる
+## finally: db.close()
+エンドポイントの処理が終わった後に必ずセッションを閉じてメモリリークを防ぐ
