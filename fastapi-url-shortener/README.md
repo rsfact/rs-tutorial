@@ -30,6 +30,8 @@
 ## 環境構築
 
 ```bash
+cd fastapi-url-shortener
+cd backend
 python -m venv .venv
 source .venv/Scripts/activate # Windows
 source .venv/bin/activate # Mac
@@ -54,7 +56,7 @@ python initialize.py
 cd backend
 python main.py
 ```
-[Swagger UI](http://localhost:8000/docs)にアクセスする。
+[Swagger UI](http://localhost:8000/api/docs)にアクセスする。
 
 
 ### STEP2: API通信の型=スキーマの定義

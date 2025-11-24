@@ -2,11 +2,12 @@ from fastapi import FastAPI
 
 app = FastAPI(
     title="URL Shortener",
-    description="My URL shortener",
+    description="URL shortener service",
     version="0.1.0"
+    docs_url="/api/docs",
 )
 
-# データベース関連をここに
+# データベース接続設定をここに
 
 # スキーマをここに
 

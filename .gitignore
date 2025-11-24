@@ -1,4 +1,4 @@
 __pycache__
-.venv
-fastapi-url-shortener/db.sqlite
+backend/.venv
+fastapi-url-shortener/database/db.sqlite
 .DS_Store
