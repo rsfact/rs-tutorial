@@ -3,7 +3,7 @@ from fastapi import FastAPI
 app = FastAPI(
     title="URL Shortener",
     description="URL shortener service",
-    version="0.1.0"
+    version="0.1.0",
     docs_url="/api/docs",
 )
 
